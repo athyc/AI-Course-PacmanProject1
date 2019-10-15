@@ -140,10 +140,10 @@ def breadthFirstSearch(problem):
     print 'starting bfs?'
     start = problem.getStartState()
     queue = util.Queue()
-    queue.push([start, 'Root', 1])
+    queue.push([(start, 'Root', 1), ['Root']])
     visited = list()
     ptoc = dict()
-
+    temp1= list()
     print "start:", start
     print "list of visited nodes:", visited
     print "current queue:"
@@ -154,24 +154,26 @@ def breadthFirstSearch(problem):
     while queue.isNotEmpty():
         currnode = queue.pop()
         print "currnode is", currnode
-        if problem.isGoalState(currnode[0]):
-            print currnode, "isgoalstate!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            # raw_input()
+        if problem.isGoalState(currnode[0][0]):
+            print currnode, "is goal state!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            #raw_input()
             break
         else:
-            if currnode[0] not in visited:
+            if currnode[0][0] not in visited:
                 print "\ncurrnode not in visited"
-                visited.append(currnode[0])
+                visited.append(currnode[0][0])
             else:
                 print "currnode in visited, continuing"
                 continue
 
-            nextnodes = problem.getSuccessors(currnode[0])
+            nextnodes = problem.getSuccessors(currnode[0][0])
             print "nextnodes", nextnodes
             for node in nextnodes:
                 if node[0] not in visited:
-                    queue.push(node)
-                    ptoc[node] = currnode
+                    temp1 = list(currnode[1])
+                    temp1.append(node[1])
+                    queue.push([node, temp1])
+                    ptoc[node] = currnode[0]
 
             print "list of visited nodes:", visited
             print "current queue:"
@@ -179,22 +181,22 @@ def breadthFirstSearch(problem):
             print"Current dictionary:"
 
     rvalue = list()
-    temp = currnode
+    temp = currnode[0]
     print "final dict"
     for i in ptoc:
         print i, ptoc[i]
 
-    raw_input()
+    #raw_input()
     while temp[1] != 'Root':
         rvalue.append(temp[1])
         print temp
-        raw_input()
+        #raw_input()
         print rvalue
         temp = ptoc[temp]
     rvalue.reverse()
     print rvalue
-    raw_input()
-    return rvalue
+    #raw_input()
+    return currnode[1][1:]
 
 
 # node template is ((x,y),'Direction',cost)
