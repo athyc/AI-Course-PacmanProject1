@@ -169,11 +169,11 @@ def breadthFirstSearch(problem):
             nextnodes = problem.getSuccessors(currnode[0][0])
             print "nextnodes", nextnodes
             for node in nextnodes:
-                if node[0] not in visited:
-                    temp1 = list(currnode[1])
-                    temp1.append(node[1])
-                    queue.push([node, temp1])
-                    ptoc[node] = currnode[0]
+
+                temp1 = list(currnode[1])
+                temp1.append(node[1])
+                queue.push([node, temp1])
+#                ptoc[node] = currnode[0]
 
             print "list of visited nodes:", visited
             print "current queue:"
@@ -187,13 +187,13 @@ def breadthFirstSearch(problem):
         print i, ptoc[i]
 
     #raw_input()
-    while temp[1] != 'Root':
-        rvalue.append(temp[1])
-        print temp
-        #raw_input()
-        print rvalue
-        temp = ptoc[temp]
-    rvalue.reverse()
+ #   while temp[1] != 'Root':
+  #      rvalue.append(temp[1])
+   #     print temp
+    #    #raw_input()
+     #   print rvalue
+      #  temp = ptoc[temp]
+    #rvalue.reverse()
     print rvalue
     #raw_input()
     return currnode[1][1:]
@@ -268,23 +268,26 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    # raw_input()
+   # raw_input()
+    raw_input()
     pq = util.PriorityQueue()
-    start = problem.getStartState();
-    pq.push(start, 0)
+    start = problem.getStartState()
+    start1 = [(start, 'Root', 1), ['Root'], 0]
+    pq.push(start1, 0)
     # pq.printList()
     ntpac = dict()
     visited = list()
-    ntpac[start] = (['Root'], 0)
+    visited.append(start)
+    #ntpac[start] = (['Root'], 0)
     while pq.isNotEmpty():  # node[0] is syntetagmenes, node[1] is direction, node[2] is cost
-        node = pq.pop();
+        node = pq.pop()
         print 'now examining', node
-        tempPathToParent = list(ntpac[node][0])
-        cost = ntpac[node][1]
+        tempPathToParent = list(node[1])
+        cost = node[2]
         # print tempPathToParent
-        if problem.isGoalState(node):
+        if problem.isGoalState(node[0][0]):
             print "ISGOALSTATEEEEEE!!!!!!"
-            rvalue = ntpac[node][0]
+            rvalue = node[1]
             # print node
             # print rvalue
             # pq.printList()
@@ -294,7 +297,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             print rvalue[1:]
 
             return rvalue[1:]
-        successors = problem.getSuccessors(node)
+        successors = problem.getSuccessors(node[0][0])
         for s in successors:
             print "    ", s
             tempPath = list(tempPathToParent)
@@ -303,20 +306,22 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             newCost = problem.getCostOfActions(tempPath[1:]) + heuristic(s[0], problem)
             print '        hv', heuristic(s[0], problem)
             print '        newCost!', newCost
-            if s[0] not in ntpac:
+            if s[0] not in visited:
                 print "               node not logged"
 
                 print '               tempPath ', tempPath
-                ntpac[s[0]] = (tempPath, newCost)
-                pq.push(s[0], newCost)
+                visited.append(s[0])
+                #ntpac[s[0]] = (tempPath, newCost)
+                tempNode = [(s), tempPath, newCost]
+                pq.push(tempNode, newCost)
 
                 # dicprint(ntpac)
                 # raw_input()
             else:
                 print '                 hi'
-                if ntpac[s[0]][1] > newCost:
-                    ntpac[s[0]] = (tempPath, newCost)
-                    pq.push(s[0], newCost)
+                if s[2] > newCost:
+                    tempNode = [(s), tempPath, newCost]
+                    pq.push(tempNode, newCost)
                 # raw_input()
             pq.printList()
 

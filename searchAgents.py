@@ -293,6 +293,7 @@ class CornersProblem(search.SearchProblem):
         print self.startingGameState
         print self.startingPosition,"!"
         print self.cornersLeft
+        raw_input()
         
     def getStartState(self):
         """
@@ -300,7 +301,8 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        rvalue = (self.startingPosition, [])
+        return rvalue
         
 
 
@@ -309,9 +311,7 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        if(state)in self.cornersLeft:
-            self.cornersLeft.remove(state)
-        if len(self.cornersLeft)==0:
+        if set(state[1]) == set(self.corners):
             return True
         return False
         
@@ -328,17 +328,21 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         successors = []
+
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            
-            x=state[0]
-            y=state[1]
+            visitedcorners = list(state[1])
+            x=state[0][0]
+            y=state[0][1]
             dx,dy=Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
+            if (nextx,nexty) in self.corners and (nextx,nexty) not in visitedcorners:
+                visitedcorners.append((nextx,nexty))
             # hitsWall
             if not hitsWall:
                 # 'inif'
-                successors.append(((nextx,nexty),action,1))
+
+                successors.append((((nextx,nexty),visitedcorners),action,1))
             
 
             
