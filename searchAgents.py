@@ -382,22 +382,40 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     #print corners, walls
     left = list(set(corners) - set(state[1]))
+
+    newall = list()
+    cornersdist = list()
+    if (len(left) == 0):
+        return 0
+    if(len(left) == 1):
+        return util.manhattanDistance(left[0], state[0])
+    if(len(left) == 2):
+        newall.extend([util.manhattanDistance(left[0],state[0]),util.manhattanDistance(left[1],state[0])])
+        return min(newall) + util.manhattanDistance(left[0],left[1])
+    if(len(left) == 3):
+        newall.extend([util.manhattanDistance(left[0], state[0]), util.manhattanDistance(left[1], state[0]), util.manhattanDistance(left[2],state[0])])
+        cornersdist.extend([util.manhattanDistance(left[0],left[1]),util.manhattanDistance(left[2],left[1]),util.manhattanDistance(left[0],left[2])])
+        minindex = newall.index(min(newall))
+        otherc =  [x for i,x in enumerate(cornersdist) if i!=minindex]
+        return min(newall) + otherc[0] + otherc[1]
+
+
     rvalue = 0
     rrvalue = 0
-    all = []
+    #all = list()
+    #for i in range(1, len(left)):
+
     for c in left:
         new = util.manhattanDistance(c, state[0])
         #rrvalue = rrvalue + new
-        all.append(new)
         if new > rvalue:
             rvalue = new
     #print rvalue
     #raw_input()
 
     "*** YOUR CODE HERE ***"
-    if(len(all) == 0):
-        return 0
-    #return max(all)
+
+    return rvalue
     #return rrvalue
     return 0 # Default to trivial solution
 
