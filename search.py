@@ -196,6 +196,7 @@ def breadthFirstSearch(problem):
     #rvalue.reverse()
     print rvalue
     #raw_input()
+    #return ['North','North','North','North','North','North','North','North','North','North']
     return currnode[1][1:]
 
 
@@ -264,12 +265,16 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-
+def someListSearch(list, element):
+    for el in list:
+        if el[0] == element:
+            return True
+    return False
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
    # raw_input()
-    raw_input()
+    #raw_input()
     pq = util.PriorityQueue()
     start = problem.getStartState()
     start1 = [(start, 'Root', 1), ['Root'], 0]
@@ -278,10 +283,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     ntpac = dict()
     visited = list()
     visited.append(start)
+    visitedcost = list()
+    visitedcost.append(0)
     #ntpac[start] = (['Root'], 0)
     while pq.isNotEmpty():  # node[0] is syntetagmenes, node[1] is direction, node[2] is cost
         node = pq.pop()
-        print 'now examining', node
+        #print 'now examining', node
         tempPathToParent = list(node[1])
         cost = node[2]
         # print tempPathToParent
@@ -299,18 +306,19 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             return rvalue[1:]
         successors = problem.getSuccessors(node[0][0])
         for s in successors:
-            print "    ", s
+            #print "    ", s
             tempPath = list(tempPathToParent)
             tempPath.append(s[1])
 
             newCost = problem.getCostOfActions(tempPath[1:]) + heuristic(s[0], problem)
-            print '        hv', heuristic(s[0], problem)
-            print '        newCost!', newCost
+         #   print '        hv', heuristic(s[0], problem)
+          #  print '        newCost!', newCost
             if s[0] not in visited:
-                print "               node not logged"
+           #     print "               node not logged"
 
-                print '               tempPath ', tempPath
+            #    print '               tempPath ', tempPath
                 visited.append(s[0])
+                visitedcost.append(newCost)
                 #ntpac[s[0]] = (tempPath, newCost)
                 tempNode = [(s), tempPath, newCost]
                 pq.push(tempNode, newCost)
@@ -318,12 +326,13 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 # dicprint(ntpac)
                 # raw_input()
             else:
-                print '                 hi'
-                if s[2] > newCost:
+             #   print '                 hi'
+                comp = visitedcost[visited.index(s[0])]
+                if comp > newCost:
                     tempNode = [(s), tempPath, newCost]
                     pq.push(tempNode, newCost)
                 # raw_input()
-            pq.printList()
+            #pq.printList()
 
     util.raiseNotDefined()
 
