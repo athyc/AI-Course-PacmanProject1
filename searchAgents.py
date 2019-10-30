@@ -481,6 +481,81 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+def aStarSearchVal(problem,start,goal):
+    #Search the node that has the lowest combined cost and heuristic first.
+    "*** YOUR CODE HERE ***"
+   # raw_input()
+    #raw_input()
+    print "from", start, "to", goal
+    pq = util.PriorityQueue()
+    start2 = problem.getStartState()
+    start1 = [(start, 'Root', 1), ['Root'], 0]
+    pq.push(start1, 0)
+    # pq.printList()
+    ntpac = dict()
+    visited = list()
+    visited.append(start)
+    visitedcost = list()
+    visitedcost.append(0)
+    #ntpac[start] = (['Root'], 0)
+    while pq.isNotEmpty():  # node[0] is syntetagmenes, node[1] is direction, node[2] is cost
+        node = pq.pop()
+        #print 'now examining', node
+        tempPathToParent = list(node[1])
+        cost = node[2]
+        # print tempPathToParent
+        if goal == node[0][0][0]:
+            print "ISGOALSTATEEEEEE!!!!!!"
+
+
+            rvalue = node[1]
+            a = problem.getCostOfActions(rvalue[1:])
+            print "from", start, "to", goal," ",a
+            # print node
+            # print rvalue
+            # pq.printList()
+            # raw_input()
+            # dicprint(ntpac)
+
+            print rvalue[1:]
+            return a
+            return rvalue[1:]
+        successors = problem.getSuccessors(node[0][0])
+        for s in successors:
+            #print "    ", s
+            tempPath = list(tempPathToParent)
+            tempPath.append(s[1])
+
+            newCost = problem.getCostOfActions(tempPath[1:]) + util.manhattanDistance(s[0][0], node[0][0][0])
+         #   print '        hv', heuristic(s[0], problem)
+          #  print '        newCost!', newCost
+            if s[0][0] not in visited:
+           #     print "               node not logged"
+
+            #    print '               tempPath ', tempPath
+                visited.append(s[0][0])
+                visitedcost.append(newCost)
+                #ntpac[s[0]] = (tempPath, newCost)
+                tempNode = [(s), tempPath, newCost]
+                pq.push(tempNode, newCost)
+
+                # dicprint(ntpac)
+                # raw_input()
+            else:
+             #   print '                 hi'
+                comp = visitedcost[visited.index(s[0][0])]
+                if comp > newCost:
+                    tempNode = [(s), tempPath, newCost]
+                    pq.push(tempNode, newCost)
+                # raw_input()
+            #pq.printList()
+def findNextClosest(left,coords):
+    all = list()
+    allnodes = list()
+    for c in left:
+        all.append(util.manhattanDistance(c, coords))
+    return (left[(all.index(min(all)))],min(all))
+    return 0
 def foodHeuristic(state, problem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -517,8 +592,28 @@ def foodHeuristic(state, problem):
     coord = foodGrid.asList()
     print coord
     rvalue = 0
+    rrvalue =0
+    prev = state[0]
+    left = list(coord)
+    if len(coord) == 0:
+        return 0
+
+    next = findNextClosest(left, state[0])
+    dist = mazeDistance(state[0], next[0], problem.startingGameState)
+    return dist +len(coord)-1
+
+    #previous versions
+    while len(left) != 0:
+        nextClosest = findNextClosest(left, prev)
+        left.remove(nextClosest[0])
+        rrvalue = rrvalue + nextClosest[1]
+        prev = nextClosest[0]
+    return (rrvalue+1)/2
+    all = list()
     for c in coord:
+
         new = util.manhattanDistance(c, state[0])
+        all.append(new)
         if new > rvalue:
             rvalue = new
     return rvalue
